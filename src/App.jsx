@@ -1,7 +1,3 @@
-import { useState } from 'react'
-import heroImg from './assets/hero.png'
-import reactLogo from './assets/react.svg'
-import viteLogo from './assets/vite.svg'
 import './App.css'
 import BookDetailsForm from './components/BookDetailsForm'
 import BookCard from './components/BookCard'
@@ -12,7 +8,6 @@ function App() {
 const isAddBook=useSelector((state)=>state.book.isAddBook);
  const books=useSelector((state)=>state.book.booksData);
  const dispatch=useDispatch();
- console.log(books);
 
   return (
     <>
@@ -26,10 +21,11 @@ const isAddBook=useSelector((state)=>state.book.isAddBook);
      </div>
      <div className='bookcard-container'>
       {
-        books.map((book,index)=>{
-           return <BookCard key={index} book={book}/>
+        books.map((book)=>{
+           return <BookCard key={book.id} book={book}/>
         })
       }
+      {books.length === 0 && <p>No books added yet. Click "Add Book" to create one.</p>}
      </div>
      
     </>

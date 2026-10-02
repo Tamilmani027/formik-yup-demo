@@ -1,11 +1,16 @@
 import React from "react";
 import { useDispatch } from "react-redux";
-import { toggleAddBook, addBook } from "../slice/bookSlice";
+import { toggleAddBook, addBook, updateBook } from "../slice/bookSlice";
 import { Formik, Form, Field } from "formik";
 import * as Yup from "yup";
 
-function BookDetailsForm() {
+function BookDetailsForm({ book, onComplete }) {
   const dispatch = useDispatch();
+
+  const handleCancel = () => {
+    dispatch(toggleAddBook());
+    onComplete?.();
+  };
 
   const validationSchema = Yup.object({
     bookname: Yup.string().required("Book name is required"),
@@ -17,21 +22,24 @@ function BookDetailsForm() {
   });
 
   return (
-    <div className="overlay1">
+    <div className="overlay">
       <Formik
         initialValues={{
-          bookname: "",
-          isbn: "",
-          pubdate: "",
-          authorname: "",
-          dob: "",
-          bio: "",
+          bookname: book?.bookname ?? "",
+          isbn: book?.isbn ?? "",
+          pubdate: book?.pubdate ?? "",
+          authorname: book?.authorname ?? "",
+          dob: book?.dob ?? "",
+          bio: book?.bio ?? "",
         }}
+        enableReinitialize
         validationSchema={validationSchema}
         onSubmit={(values, { resetForm }) => {
-          dispatch(addBook(values));
+          const savedBook = { ...values, id: book?.id ?? crypto.randomUUID() };
+          dispatch(book ? updateBook(savedBook) : addBook(savedBook));
           dispatch(toggleAddBook());
           resetForm();
+          onComplete?.();
         }}
       >
         {({ errors, touched }) => (
@@ -72,7 +80,8 @@ function BookDetailsForm() {
               {touched.bio && errors.bio && <span>{errors.bio}</span>}
             </div>
 
-            <button type="submit">Add Book</button>
+            <button type="submit">{book ? "Save Changes" : "Add Book"}</button>
+            <button type="button" onClick={handleCancel}>Cancel</button>
           </Form>
         )}
       </Formik>
