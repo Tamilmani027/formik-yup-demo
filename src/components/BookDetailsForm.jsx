@@ -80,8 +80,11 @@ function BookDetailsForm({ book, onComplete }) {
               {touched.bio && errors.bio && <span>{errors.bio}</span>}
             </div>
 
-            <button type="submit">{book ? "Save Changes" : "Add Book"}</button>
-            <button type="button" onClick={handleCancel}>Cancel</button>
+						<div className="formbtn">
+							<button type="submit">{book ? "Save Changes" : "Add Book"}</button>
+            	<button type="button" onClick={handleCancel}>Cancel</button>
+						</div>	
+            
           </Form>
         )}
       </Formik>
